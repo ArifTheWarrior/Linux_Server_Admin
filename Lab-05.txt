@@ -1,0 +1,200 @@
+User and Group:
+
+-	EEE
+-	CSE
+-	ETE
+-	BBA
+-	ECO
+
+==> SOSE : EEE, CSE, ETE 
+==> SOBE : BBA, ECO
+==> UIU  : EEE, CSE, ETE, BBA, ECO 
+
+
+
+useradd EEE
+passwd EEE
+useradd CSE 
+passwd CSE  
+useradd ETE 
+passwd ETE 
+cd /home
+ls
+
+
+
+groupadd SOSE 
+usermod -G SOSE EEE
+cat /etc/group | grep EEE 
+
+usermod -G SOSE CSE [use only user already exists]
+usermod -G SOSE ETE 
+useradd -G SOSE BBA [user not exists, create and add group]
+cat /etc/group
+
+
+groupadd SOBE 
+groupadd UIU
+
+useradd -G SOBE BBA
+useradd -G SOBE ECO
+
+cat /etc/group
+
+passwd BBA
+passwd ECO
+
+
+usermod -a -G UIU,SOSE EEE
+usermod -a -G UIU,SOSE CSE 
+usermod -a -G UIU,SOSE ETE
+usermod -a -G UIU,SOBE BBA
+usermod -a -G UIU,SOBE ECO 
+cat /etc/group
+
+
+useradd test 
+useradd test-2
+ls /home
+usedel test 
+userdel test 
+ls /home
+rm -rf test 
+ls /home
+userdel -r test-2
+ls /home
+
+
+Three Directory in /home: SOSE, SOBE, UIU 
+
+drwxr-xr-x.  2 root   root      6 Nov  5 04:43 SOBE
+drwxr-xr-x.  2 root   root      6 Nov  5 04:42 SOSE
+drwxr-xr-x.  2 root   root      6 Nov  5 04:43 UIU
+1----2-----   --3--   --4--                    --5--
+               user   group
+
+2. rwxr-xr-x r==>read, w==> write, x==>execute 
+
+  rwx  rwx rwx 
+   1    2   3   
+
+1.user permission [u]
+2.Group [g]
+3.others/public [o]
+
+[root@server home]# chmod o-rx SOBE 
+[root@server home]# chmod o-rx SOSE 
+[root@server home]# chmod o-rx UIU 
+
+
+drwxr-x---.  2 root   root      6 Nov  5 04:43 SOBE
+drwxr-x---.  2 root   root      6 Nov  5 04:42 SOSE
+drwxr-x---.  2 root   root      6 Nov  5 04:43 UIU
+
+
+
+
+[root@server home]# su EEE
+[EEE@server home]$ ls 
+arif  BBA  CSE  ECO  EEE  ETE  server  SOBE  SOSE  UIU
+[EEE@server home]$ cd UIU 
+bash: cd: UIU: Permission denied
+
+
+
+[root@server home]# chgrp SOSE SOSE/
+[root@server home]# chgrp UIU UIU/
+[root@server home]# chgrp SOBE SOBE/
+
+
+
+
+[root@server home]# chmod g+w SOSE/
+
+
+r=>4 
+w=>2
+x=>1 
+
+rwx==>4+2+1==>7 111 
+
+421
+111 
+
+[root@server home]# chmod 770 SOBE 
+
+[root@server home]# chown EEE SOSE/
+
+
+
+Advanced Access Controll
+=========================
+
+[root@server home]# mkdir cisco
+[root@server home]# chmod o-rx cisco 
+
+
+[root@server home]# getfacl cisco/
+# file: cisco/
+# owner: root
+# group: root
+user::rwx
+group::r-x
+other::---
+
+
+
+[root@server home]# setfacl -m u:EEE:rwx cisco 
+[root@server home]# getfacl cisco 
+# file: cisco
+# owner: root
+# group: root
+user::rwx
+user:EEE:rwx
+group::r-x
+mask::rwx
+other::---
+
+
+
+[root@server home]# setfacl -m g:SOBE:r-x cisco 
+[root@server home]# getfacl cisco
+# file: cisco
+# owner: root
+# group: root
+user::rwx
+user:EEE:rwx
+group::r-x
+group:SOBE:r-x
+mask::rwx
+other::---
+
+drwxrwx---+  2 root   root      6 Nov  5 06:12 cisco
+
+
+
+Extra:
+=====
+
+
+[root@server home]# id EEE
+uid=1002(EEE) gid=1004(EEE) groups=1004(EEE),1007(SOSE),1010(UIU)
+
+
+Press: Alt+Ctrl+F2 - Alt+Ctrl+F6 (Physical PC)
+
+gpasswd -d ikbal staff [remove ikbal user from staff group]
+passwd -d ikbal --> remove password from user 
+
+usermod -c "Mr. Rafat Ahmed" rafat
+
+cat /etc/shells
+
+usermod -s /sbin/nologin student 
+usermod -s /bin/bash student
+
+usermod -L student ; user account lock 
+usermod -U student ; user account unlock 
+
+groupdel stagg ; group delete 
+

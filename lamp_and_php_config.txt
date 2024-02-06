@@ -1,0 +1,148 @@
+
+LAMP and PHP-MyAdmin:Linux,Apache,MariaDB,PHP and PHP-MyAdmin
+
+1.instal Apache web Server 
+2.Install MariaDB Database
+3.Install PHP 
+4.Install PHP-MyAdmin 
+
+**Firewall and SELinux Set-up 
+
+###########################################################
+
+yum repolist 
+yum list 
+
+yum install httpd 
+
+
+systemctl start httpd 
+
+systemctl restart httpd 
+
+systemctl enable httpd 
+
+
+yum install mariadb-server mariadb
+
+
+systemctl start mariadb 
+
+systemctl status mariadb 
+
+systemctl enable mariadb 
+
+
+
+set password mariadb 
+====================
+
+mysql_secure_installation 
+
+mysql -u root -p
+
+
+
+setup php
+=========
+
+yum install php php-mysql 
+
+if php version getting old:
+===========================
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+
+
+cd /etc/yum.repos.d/
+vim remi-php81.repo
+enable=0 to enable=1
+yum update/ yum update php* 
+
+php -v 
+
+
+
+cd /etc/httpd/conf
+vim httpd.conf 
+
+164 DirectoryIndex index.html index.php index.js index.py 
+
+
+firewall-cmd --add-service=http --permanent
+
+firewall-cmd --reload 
+
+systemctl restart httpd 
+
+
+if server get problem,you set selinux permisive 
+
+cd /var/www/html
+
+touch index.php 
+
+vim index.php 
+
+<?php
+  phpinfo();
+
+?>
+
+
+systemctl restart httpd 
+
+rm -rf * 
+
+add you own script[login Form]
+
+browse ip address
+
+yum install phpmyadmin 
+
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+No package phpmyadmin available.
+Error: Nothing to do
+
+cd /etc/yum.repos.d/
+cp Cemtos_repo/* .
+
+yum list 
+yum repolist
+ 
+
+dns setup:
+==========
+
+nmcli connection modify ens33 ipv4.dns 8.8.8.8
+
+nmcli connection up ens33
+
+yum list 
+
+Enterprise Repo list setup
+==========================
+
+yum install epel-release
+ 
+yum install phpmyadmin 
+
+
+
+cd /etc/httpd/conf.d/
+
+ vi phpMyAdmin.conf
+ 
+17 Require  all granted 
+25 Allow from all
+
+systemctl restart httpd 
+
+
+http://192.168.29.132/phpmyadmin/
+
+
+
+
+

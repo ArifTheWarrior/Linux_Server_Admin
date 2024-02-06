@@ -1,0 +1,175 @@
+E-mail Protocols:
+------------------
+.Simple Mail Transfer Protocol ->SMTP
+.Post Office Protocol->POP
+.Internet Message Access Protocol->IMAP 
+
+
+Mail Server Configuration:
+--------------------------
+
+-Package Name:postfix,dovecot,squirrelmail 
+-Need Static IP Address and Host Name
+ 	-IP:x.x.x.x
+	-Host:server.system.com
+	-Domain:system.com
+
+
+Yum Configuration:
+-----------------
+
+-EPRL Repo.rpm
+https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+-Remi Repo
+http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+
+yum repolist
+
+hostnamectl set-hostname server.system.com 
+ 
+vi /etc/hosts 
+
+ip server.system.com server 
+
+
+ls /etc/yum.repos.d/ 
+ 
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+
+
+vi /etc/yum.repos.d/remi.repo 
+10 enabled=1
+
+yum update 
+
+yum list
+
+yum install postfix -y
+
+vi /etc/postfix/main.cf 
+
+75 myhostname = server.system.com
+83 mydomain = system.com
+99 myorigin = $mydomain
+113 inet_interfaces = all
+119 inet_protocols = all
+164 #mydestination = $myhostname, localhost.$mydomain, localhost
+165 mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+264 mynetworks = 192.168.29.0/24, 127.0.0.0/8
+419 home_mailbox = Maildir/
+
+
+systemctl start postfix 
+systemctl enable postfix
+
+yum install dovecot
+
+vi /etc/dovecot/dovecot.conf
+24 protocols = imap pop3 lmtp
+
+cd /etc/dovecot/conf.d
+
+vi /etc/dovecot/conf.d/10-mail.conf 
+24     mail_location = maildir:~/Maildir
+
+vi /etc/dovecot/conf.d/10-auth.conf 
+10 disable_plaintext_auth = yes
+100 auth_mechanisms = plain login
+
+
+vi /etc/dovecot/conf.d/10-master.conf 
+ 89   unix_listener auth-userdb {
+     90     mode = 0666
+     91     user = postfix
+     92     group = postfix
+     93   }
+
+
+systemctl start dovecot
+systemctl enable dovecot
+
+
+yum install squirrelmail 
+
+
+cd /usr/share/squirrelmail/config/
+./conf.pl 
+
+
+Command >> 1
+
+Command >> 1
+
+
+[SquirrelMail]: system.com
+
+
+Command >> s
+
+Command >> r
+
+
+Command >> 2 -> server settings
+
+command-->1 
+localhost:system.com
+
+
+Command >> 3
+
+
+  1.  Sendmail
+  2.  SMTP
+Your choice [1/2] [1]: 2
+
+command>>s
+command>>q 
+
+
+
+
+vi /etc/httpd/conf/httpd.conf
+
+############New Line###########
+Alias /webmail /usr/share/squirrelmail 
+<Directory /usr/share/squirrelmail>
+	Options Indexes FollowSymLinks
+	RewriteEngine On
+	AllowOverride All
+	DirectoryIndex index.php
+	Order allow,deny
+	Allow from all
+</Directory>
+
+
+systemctl start httpd
+systemctl enable httpd
+
+useradd arif
+passwd arif
+
+useradd Arif1
+passwd Arif1
+
+
+firewall-cmd --add-service=smtp --permanent
+firewall-cmd --add-service=http --permanent
+firewall-cmd --reload
+
+browse host machine to centos ip:
+192.168.29.132/webmail 
+
+
+login two window:
+
+username:which user create 
+passwoed:which password given 
+
+
+if face error,
+1.selinux permissive
+2.reboot
+3.setsebool httpd_can_network_connect=1

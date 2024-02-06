@@ -1,0 +1,25 @@
+Input: D={x1,...,xi,...,Xn}
+Output: Random Forest Evaluation Matrics
+Method:
+
+1.DT = ∅;
+2.Performe k-means clustering with n_clusters
+3.Generate random binary labels (0,1)
+3.for each cluster_id do 
+4.   create a cluster mask based on the cluster_id mask =               y_kmeans == cluster_id
+5.    extract cluster_labels and cluster_feature 
+6.    Train Decision Tree DT[cluster_id] with cluster_features and 
+      cluster_labels
+7.end for
+8.Initialize  a random forest with estimators=number_of_cluster
+9.for tree in decision_trees
+10. Each tree Cluster assignments as feature for Random Forest 
+11.  Split data into X_train, X_test, y_train, y_test
+12.  Predic the test set using Random Forest y_pred_rf =rf.predict                                           (X_test)
+13.  Evaluate Random Forest performance:
+       Calculate accuracy_rf,precision_rf,recall_rf,f1_rf 
+14.end for
+
+   
+  
+  

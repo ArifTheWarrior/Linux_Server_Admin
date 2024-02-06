@@ -1,0 +1,205 @@
+FTP Server for Anonymous
+========================
+yum list 
+
+-Install:vsftpd 
+yum install vsftpd-3.0.2-29.el7_9.x86_64
+-FTP Directory: /var/ftp/pub or  /var/ftp
+
+cd /var/ftp 
+touch arif.txt 
+mkdir arif.mp3 
+
+systemctl start vsftpd 
+
+systemctl enable vsftpd 
+
+systemctl status vsftpd 
+
+
+-FTP Configuration File : /etc/vsftpd/vsftpd.conf 
+
+cp vsftpd.conf vsftpd.conf.bkp 
+
+vim vsftpd.conf 
+
+12 anonymous_enable=YES 
+
+16 local_enable=NO
+
+19 write_enable=NO 
+
+#######New Line ######
+
+no_anon_password=YES
+#hide_ide=YES
+#pasv_min_port=20000
+#pasv_max_port=20001
+
+
+systemctl restart vsftpd 
+
+
+firewall-cmd --permanent --add-service=ftp
+
+firewall-cmd --reload 
+  
+ftp://192.168.29.132
+
+
+=============================================================
+
+User define FTP-Server
+======================
+-vsftpd
+-FTP home Dir: /var/ftp
+-FTP Server Config File : /etc/vsftpd/vsftpd.conf
+
+cd /etc/vsftpd/
+vi vsftpd.conf 
+
+
+ 12 anonymous_enable=NO
+ 16 local_enable=YES
+ 19 write_enable=YES
+ 37 dirmessage_enable=YES
+ 43 connect_from_port_20=YES
+
+
+ 83 ascii_upload_enable=YES [uncomment]
+ 84 ascii_download_enable=YES [uncomment]
+
+ 87 ftpd_banner=Welcome to UIU Cisco  FTP service. [uncomment]
+ 101 chroot_local_user=YES [uncomment]
+
+ 127 userlist_enable=YES [comment]
+
+######New Line####
+userlist_deny=NO
+userlist_file=/etc/vsftpd/list_user_ftp
+local_root=/FTP
+pasv_min_port=50000
+pasv_max_port=50088
+
+groupadd ftpgroup 
+
+useradd -G ftpgroup ftpuser1
+
+passwd ftpuser1
+
+cd /etc/vsftpd/
+touch list_user_ftp 
+
+vi list_user_fp 
+ftpuser1
+
+cd /
+mkdir FTP
+cd FTP 
+mkdir upload download 
+
+chmod 550 download 
+chmod 550 upload
+cd ..
+chown -R root:ftpgroup /FTP 
+
+firewall-cmd --permanent --add-port=20-21/tcp
+firewall-cmd --permanent --add-port=50000-50088/tcp
+firewall-cmd --reload
+
+systemctl restart vsftpd 
+
+setenforce 0 
+vi /etc/selinux/config
+SELINUX=permissive 
+
+
+
+User Home Directory Based FTP Server
+====================================
+yum list 
+yum install vsftpd 
+
+systemctl start vsftpd 
+systemctl enable vsftpd
+systemctl status svftpd 
+
+cd /etc/vsftpd/
+vi vsftpd.conf
+:set nu 
+ 
+ 12 anonymous_enable=NO
+ 
+ 83 ascii_upload_enable=YES [uncomment]
+ 84 ascii_download_enable=YES [uncomment]
+
+ 101 chroot_local_user=YES [uncomment]
+ 102 chroot_list_enable=YES [uncomment]
+ 110 ls_recurse_enable=YES [uncomment]
+ 115 listen=YES [only use ipv4=YES, if ipv4,ipv6==>No]
+ 124 listen_ipv6=NO [not use ipv6]
+ 
+ ###New Line######
+
+local_root=public_html
+use_localtime=NO 
+seccomp_sandbox=NO
+
+
+systemctl restart vsftpd 
+
+useradd ftpuser 
+
+passwd ftpuser 
+
+
+useradd centos
+passwd centos
+
+cd /etc/vsftpd 
+touch chroot_list 
+vi chroot_list 
+
+write those line:
+ftpuser
+centos
+
+
+systemctl restart vsftpd 
+
+
+
+firewall-cmd --permanent --add-service=ftp 
+
+firewall-cmd --reload
+
+
+getenforce 
+
+if problem face: 
+
+setenforce  0  
+
+systemctl restart vsftpd
+
+
+check it's working or not ?
+
+cd /home/ftpuser 
+touch Arif.txt 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

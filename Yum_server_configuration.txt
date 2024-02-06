@@ -1,0 +1,74 @@
+YUM Server Configuration
+========================
+-Space:5GB (/var)
+-Default Dir: /var/ftp/pub 
+-Packages: createrepo,vsftpd
+-All RPM Packages
+
+-SELinux and Firewall Settings
+- Firewall Settings 
+
+Found rpm packages in dvd file folder
+cd Desktop/rpms 
+rpm -ivh vsftpd-3.0.2-28.el7.x86_64.rpm 
+
+systemctl start vsftpd
+systemctl enable  vsftpd 
+
+
+cp -Rv /root/Desktop/rpms /var/ftp/pub
+
+cd /etc/yum.repos.d/
+rm -rf *
+touch yumlink.repo
+vim yumlink.repo 
+
+[yumlink]
+name= YUM_DB_Link 
+# /var/ftp/pub/rpms
+
+#Server--->Localhost 
+baseurl= file:///var/ftp/pub/rpms 
+
+
+#Server--->remote Server 
+baseurl = ftp://192.168.10.10/rpms 
+
+enabled = 
+gpgcheck =
+
+[use localhost] 1==> Active 0==>inactive 
+
+name= YUM_DB_Link 
+# /var/ftp/pub/rpms
+baseurl= file:///var/ftp/pub/rpms 
+enabled = 1
+gpgcheck = 0 
+
+
+cd Desktop/rpms
+rpm -ivh createrepo-0.9.9-28.el7.noarch.rpm 
+
+cd /var/ftp/pub/rpms 
+createrepo -v /var/ftp/pub/rpms 
+
+setenforce 0
+getenforce 
+
+firewall-cmd --permanent --add-service=ftp
+
+firewall-cmd --reload 
+
+yum repolist 
+
+yum list all 
+-------
+
+
+yum install php 
+
+
+
+
+
+

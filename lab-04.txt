@@ -1,0 +1,84 @@
+touch 
+mkdir 
+ls 
+cp 
+mv
+cp cl* dir1 
+rm 
+rmdir 
+vi,vim,gedit,nedit 
+echo 
+history 
+
+
+
+vi/vim
+======
+
+ESC-->Cancel 
+
+i==>insert Mode
+
+:wq==>Save and quite 
+
+:set nu ==> Linux Number 
+
+yy==>Single Line copy
+p==>paste 
+
+dd==>delete single line 
+
+
+
+
+root:x:0:0:root:/root:/bin/bash
+ 1   2  3 4 5     6      7
+
+
+
+server:x:1001:1001::/home/server:/bin/bash
+1      2  3     4  5   6            7         
+
+
+
+
+1.Username 
+2.User Password [ /etc/shadow]
+3.User ID[UID]
+4.Group ID [GID]
+5.User Description
+6.User Home Dir
+7.Users Shell 
+
+
+3.User ID[UID]
+  Root User: 0 
+  System User: 1-999
+  Regular User:1000 and 1000+
+
+useradd cse
+passwd cse 
+
+arif:x:1000:1000:Arif:/home/arif:/bin/bash
+server:x:1001:1001::/home/server:/bin/bash
+
+
+[root@server home]# su server
+
+
+password need :
+--------------
+becuse regular user to regular user: 
+
+[server@server ~]$ su arif
+Password:
+[arif@server server]$
+
+
+
+[root@server home]# groupadd sose
+[root@server home]# groupadd sobe
+[root@server home]# cat /etc/group
+
+
+==>User itself is a group 

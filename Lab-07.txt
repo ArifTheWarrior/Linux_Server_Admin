@@ -1,0 +1,164 @@
+==> Linux Partition System 
+
+File System:
+=============
+- windows File system: FAT32, NTFS 
+-Linux File System: ext2, ext3, etx4, xfs,vfat,swap 
+
+
+Two type of partition Table: 1.MBR 2.GPT 
+
+1. MBR:2TB Max Partition ,per address size:512 byte 
+2. GPT : 9.4 ZeB Partition ,per address size:512 byte (1ZB is 1 billion terabytes)
+
+
+MBR:
+====
+
+Win: C-Z and A[Flopy], B[Zip File]
+Linux: 4 Primary  or 1 Extended [Logical:15]
+
+Linux System Device: /dev 
+
+sda, sdb ==> Physical HDD
+
+vda,vdb==>Virtual HDD  
+
+
+
+HDD ==> Mount Point
+
+Command:
+
+fdisk -l 
+lsblk 
+
+
+[root@node1 SMB]# parted
+GNU Parted 3.1
+Using /dev/sda
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+
+(parted) print free
+
+Model: VMware, VMware Virtual S (scsi)
+Disk /dev/sda: 21.5GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags:
+
+Number  Start   End     Size    Type     File system  Flags
+        32.3kB  1049kB  1016kB           Free Space
+ 1      1049kB  1075MB  1074MB  primary  xfs          boot
+ 2      1075MB  21.5GB  20.4GB  primary               lvm
+
+df -HT 
+New Partition size:
+size:9GB
+
+Mount Point: /home/pdisk 
+
+Partition FileSystem: ext4
+
+cd /home/
+mkdir pdisk
+
+cd /dev
+ls
+
+ 
+
+fdisk /dev/sda 
+
+command: p (print pertition)
+command: n (new partition)
+ 
+
+select : p
+partition number:3 
+first sector :  default
+last sector: default or +9G or +10G 
+
+command:p (chnage Linux LVM type) 
+
+command: t , change type 
+Partition number:4
+Hex code: L 
+Hex code: 8e
+
+command:p 
+
+command: w 
+
+partprobe (update pertition table)
+
+lsblk 
+Linux partition==>static 
+LVM==>possible to slice/create a new partition 
+
+
+lsblk -f 
+
+mkfs.ext4 /dev/sda4 
+
+mount:
+=====
+
+cd /home/
+
+mount /dev/sda4 /home/pdisk 
+
+lsblk 
+
+
+permanent mount:
+----------------
+
+vi /etc/fstab 
+
+/dev/sda4   /home/pdisk   ext4 defaults  0 0
+
+mount -a 
+
+lsblk 
+
+partition delete:
+================
+
+umount /dev/sda4
+
+vi /etc/fstab 
+
+/dev/sda4   /home/pdisk   ext4 defaults  0 0 [delete thise line]
+
+fdisk /dev/sda 
+
+command :p 
+command :d 
+partition number: 4 (sda4)
+
+lsblk 
+
+partprobe 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+				

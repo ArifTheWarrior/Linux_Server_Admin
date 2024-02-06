@@ -1,0 +1,32 @@
+sso.redhat.com 
+https://rha.ole.redhat.com/rha/app/login
+https://rha.ole.redhat.com/rha/app/summary
+
+command:
+=======
+
+ls
+pwd 
+ls -l
+ls -lh 
+ll
+who 
+uname -r 
+lsblk 
+free -mh 
+df -HT 
+
+cat /etc/os-release
+
+cat /etc/redhat-release
+
+
+
+
+
+
+
+
+
+
+

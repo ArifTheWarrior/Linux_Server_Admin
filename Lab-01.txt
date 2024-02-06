@@ -1,0 +1,15 @@
+ip a
+putty connection
+
+poweroff
+
+ctrl+alt f2 [terminal mode]
+
+setup:
+=====
+
+/      20G 
+/home  5G
+/var   10G 
+/boot  2G 
+swap  2G 

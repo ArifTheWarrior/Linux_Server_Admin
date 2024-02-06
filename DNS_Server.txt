@@ -1,0 +1,154 @@
+               DNS: Domain Name System
+      =======================================
+
+Types of DNS Server:
+
+1.DNS Recursive Resolver/DNS Record 
+2.Root Name Server 
+3.Top Level Domain/TLD Name Server 
+4.Authoritative Name Server 
+
+
+DNS Recursive Resolver/DNS Record
+=================================
+
+-Provide by ISP or Local DNS Server
+
+Root Name Server:
+=================
+
+- 13 sets[letter 'a' to 'm', except 'g' and 12 org]
+- letter.root-servers.net 
+- All info about root DNS:https://root-servers.org/
+
+
+TLD Name Server:
+=================
+
+-Store the info of all Domain with extension 
+ i.e .com, .net, .org 
+-Example
+	.com TLD=>uiu.com  .net==>example.net 
+Authoritative Name Server
+	-Stores the website IP Address with Domain Name 
+
+
+
+
+DNS Server Configuration
+========================
+-Package Name : bind, bind-utils 
+-Service Name:named
+-Need static IP Address and Host Name
+  - ip:192.168.29.130
+  - Host:server.example.com
+
+Configuration File:
+ -named.conf,forward zone,Reverse zoon 
+
+
+Server:
+======
+hostnamectl set-hostname server.example.com
+
+hostnamectl status
+
+yum list 
+
+yum install bind bind-utils
+systemctl start named 
+systemctl enable named 
+
+
+systemctl status named 
+
+firewall-cmd --permanent --add-port=53/tcp
+
+firewall-cmd --permanent --add-port=53/udp
+
+firewall-cmd --reload 
+
+
+vi /etc/named.conf
+
+:set nu 
+ 13         listen-on port 53 { 127.0.0.1; 192.168.29.132; };
+ 21         allow-query     { localhost; any;  };
+ 62 ### New Line ###
+     63 ## Forward zone
+     64
+     65 zone "example.com" IN {
+     66         type master;
+     67         file "f.example.com";
+     68         allow-update { none; };
+     69
+     70
+     71 };
+     72 ### Reverse Zone 
+     73
+     74 zone "29.168.192.in-addr.arpa" IN {
+     75         type master;
+     76         file "r.example.com";
+     77         allow-update { none; };
+     78 };
+     79
+ 
+
+
+cd /var/named 
+
+cp named.localhost f.example.com 
+
+vi f.example.com
+
+$TTL 1D
+@       IN SOA  server.example.com. root.example.com.  (
+                                        0       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+@       IN      NS      server.example.com.
+@       IN      A       192.168.29.132
+server  IN      A       192.168.29.132
+web     IN      A       169.254.23.26
+
+
+cp f.example.com r.example.com 
+
+
+vi r.example.com 
+
+$TTL 1D
+@       IN SOA  server.example.com. root.example.com.  (
+                                        0       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+@       IN      NS      server.example.com.
+@       IN      PTR     example.com.
+132     IN      PTR     server.example.com.
+26      IN      PTR     web.example.com.
+
+
+
+chown root:named f.example.com
+chown root:named r.example.com
+
+named-checkconf -z /etc/named.conf
+named-checkzone forward /var/named/f.example.com
+named-checkzone reverse  /var/named/r.example.com
+
+systemctl  restart named
+
+
+set server ip in client machine dns part 
+and browse and check nslookup command
+
+
+
+
+
+
+	

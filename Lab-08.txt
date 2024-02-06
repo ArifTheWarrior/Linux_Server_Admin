@@ -1,0 +1,202 @@
+-Linux Partition 
+	=> Primary Partition 
+	=> Extended Partition 
+		- Logical Partition LV 
+		- Swap partition 
+		- LV Extend [New HDD]
+
+ 
+fdisk /dev/sda 
+Command (m for help): n 
+Partition type:
+   p   primary (2 primary, 0 extended, 2 free)
+   e   extended
+Select (default p): p
+Partition number (3,4, default 3): 4
+
+command: w for quite 
+
+
+partprobe 
+
+lsblk see add a  new sda 
+
+mkfs.xfs /dev/sda4 
+
+cd home 
+
+mkdir /home/Pdisk 
+
+mount /dev/sda4 /home/Pdisk
+
+vi /etc/fstab 
+
+/dev/sda3               /home/Pdisk/            xfs     defaults        0 0 
+
+mount -a 
+
+lsblk 
+################**********************#########################
+
+==>create two partition name Ldisk-1(2GB,xfs) and Ldisk-2(5GB,ext4) 
+==> Extend Size-->Ldisk-1 2GB to 5G GB 
+               --> Ldisk-2 5GB to 10 GB 
+
+cd /home/
+mkdir Ldisk-1
+mkdir Ldisk-2
+
+fdisk /dev/sda
+
+command: n 
+
+select : e 
+
+enter 
+enter 
+
+w
+
+partprobe 
+
+fdisk /dev/sda
+
+command: n 
+
+enter 
+enter 
+
+command: p
+command: t 
+partition number: default 
+Hex code : 8e 
+
+commnd: w 
+
+partprobe 
+
+lsblk 
+
+Logical =>  Extended ---->logical 
+
+
+logical to physical volumn 
+
+
+pvcreate /dev/sda5
+
+vgcreate -s 4M VG /dev/sda5 [volume group]
+
+vgdisplay VG 
+
+
+lvcreate -n Ldisk-1  -L 2G VG 
+lvcreate -n Ldisk-2 -L 5G VG 
+
+lsblk 
+
+
+mkfs.xfs /dev/VG/Ldisk-1
+
+mkfs.ext4 /dev/VG/Ldisk-2 
+
+
+lsblk 
+
+
+mount /dev/VG/Ldisk-1 /home/Ldisk-1 
+
+mount /dev/VG/Ldisk-2 /home/Ldisk-2  
+
+
+vi /etc/fstab 
+
+
+/dev/VG/Ldisk-1   /home/Ldisk-1 xfs defaults   0 0 
+
+/dev/VG/Ldisk-2   /home/Ldisk-2  ext4 defaults 0 0 
+ 
+mount -a 
+
+
+lsblk 
+####################################################
+
+==> Add a new hard drive
+
+
+After: 
+lsblk and see a add new hard disk space [sdb]
+
+
+fdisk /dev/sdb 
+
+coomand: n 
+slect : e [extended]
+enter 
+enter 
+
+command: n 
+select :  l 
+
+
+command: t
+Hex code: 8e 
+
+command: w 
+
+
+partprobe 
+
+
+pvcreate /dev/sdb5 
+
+vgdisplay VG 
+
+vgextend VG /dev/sdb5 
+
+vgdisplay VG 
+
+
+lsblk 
+
+umount /dev/VG/Ldisk-1 
+umount /dev/VG/Ldisk-2 
+
+
+lsblk 
+
+lvextend -L +3G /dev/VG/Ldisk-1 
+
+
+lsblk 
+
+lvextend -L +5G /dev/VG/Ldisk-2
+
+mount -a 
+xfs_growfs /dev/VG/Ldisk-1
+resize2fs /dev/VG/Ldisk-2 
+
+lsblk 
+
+
+vgdisplay VG 
+
+
+
+ 
+   
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+	

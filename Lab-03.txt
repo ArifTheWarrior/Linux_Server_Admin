@@ -1,0 +1,49 @@
+which ls 
+man ls 
+
+==>cd
+
+-Relative Path ==> one by one 
+-Abs. path ==> full path at a time [start at root]
+
+cd ..
+cd 
+
+ls /etc/
+
+
+
+
+cp /etc/passwd /root/Desktop 
+
+cp /etc/passwd .
+cp /etc/passwd .. 
+
+
+
+cp -r /etc /root/Desktop 
+
+cp -r  /etc/passwd .
+
+
+[root@server arif]# mv passwd pass
+[root@server arif]# mv etc/ ETC
+[root@server arif]#
+
+
+[root@server arif]# mv ETC /root/Downloads
+
+cat 
+
+
+
+cat /etc/passwd 
+
+cat /etc/shadow
+
+cat /etc/fstab 
+
+
+
+
+

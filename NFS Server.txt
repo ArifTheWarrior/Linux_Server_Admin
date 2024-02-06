@@ -1,0 +1,92 @@
+                   Network File System
+              =============================
+
+package:nfs-utils
+Service:rpcbind, nfs-server 
+
+1.Install
+2.Firewall Configuration 
+3.NFS Config File: /etc/exports
+
+
+server:
+=======
+
+yum list 
+
+yum install nfs-utils
+systemctl start nfs-server 
+systemctl enable nfs-server
+
+systemctl start rpcbind
+systemctl enable rpcbind 
+
+
+firewall-cmd --permanent --add-service=nfs 
+firewall-cmd --permanent --add-service=rpc-bind 
+firewall-cmd --permanent --add-service=mountd
+firewall-cmd --reload 
+
+
+cd /home/
+mkdir NFS-HDD 
+
+chown nfsnobody:root NFS-HDD
+chmod 770 NFS-HDD 
+
+vi /etc/exports
+
+/home/NFS-HDD 192.168.0.0/16(rw,sync)
+
+exportfs -avr 
+ 
+
+
+Client:
+======
+ip:192.168.29.130
+
+yum list 
+
+yum install nfs-utils 
+
+ping 192.168.29.132
+
+
+showmount -e 192.168.29.132 [server ip]
+
+cd /home/
+mkdir NFS 
+mount -t nfs -o sync 192.168.29.132:/home/NFS-HDD /home/NFS 
+0 
+df -hT 
+
+vim /etc/fstab
+
+192.168.29.132:/home/NFS-HDD /home/NFS nfs defaults  0 0
+
+mount -a 
+
+cd NFS 
+
+touch arif.txt 
+
+
+
+Now see  server pc , cd /home/NFS-HDD 
+
+[root@haserver home]#  cd NFS-HDD/
+[root@haserver NFS-HDD]# ls
+arif.txt
+
+
+
+
+
+
+ 
+
+
+
+
+

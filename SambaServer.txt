@@ -1,0 +1,168 @@
+Open Access Samba Sever[no password]
+====================================
+
+yum list 
+
+Samba Package:samba,samba-client,samba-cammon
+Config File: /etc/samba/smb.conf
+Service Name : smb, nmb 
+
+Location: /SMB
+
+yum install samba samba-client samba-common -y
+
+systemctl start smb 
+systemctl start nmb 
+
+
+systemctl enable smb 
+systemctl enable nmb
+
+
+firewall-cmd --permanent --add-service=samba 
+
+firewall-cmd --reload 
+
+
+mkdir /SMB 
+
+cd /
+
+
+chmod -R 775 /SMB
+
+chown -R nobody:nobody /SMB 
+
+cd /SMB
+
+store some file and folder in SMB/ Directory 
+
+
+cd 
+
+
+cd /etc/samba/
+
+cp smb.conf smb.conf.bkp 
+
+vi smb.conf
+
+workgroup=WORKGROUP
+security=user
+#netbios=Centos7
+passdb backend = tdbsam 
+map to guest = bad  user 
+printing = cups
+printcap name=cups
+load printers = yes
+cups options = raw 
+
+#####New Entry #####
+
+[SMB]
+	comment = Everyone Access / allow 
+	path = /SMB 
+	browsable = yes
+	writeable = yes
+	guest ok = yes 
+	read only = no 
+	create mode = 0775
+	directory mode = 0775
+	
+   
+
+testparm 
+
+systemctl restart smb 
+systemctl restart nmb 
+
+
+windows + R : 
+\\192.168.29.130
+
+getenforce 
+
+setenforce 0 , if shows problem 
+
+vi /etc/selinux/config
+
+SELINUX=permissive
+
+
+systemctl restart smb 
+systemctl restart nmb 
+
+User Defined Access Samba Server
+================================= 
+yum list 
+
+yum install samba samba-client samba-common -y
+
+systemctl start smb 
+systemctl start nmb 
+
+
+systemctl enable smb 
+systemctl enable nmb
+
+
+firewall-cmd --permanent --add-service=samba 
+
+firewall-cmd --reload
+
+
+
+mkdir /SMB-USER
+cd SMB-USER 
+mkdir Green 
+mkdir blue
+
+groupadd smbgroup 
+
+useradd smbuser1
+usermod smbuser1 -aG smbgroup 
+
+useradd smbuser2
+usermod smbuser2 -aG smbgroup 
+
+
+smbpasswd -a smbuser1 
+
+smbpasswd -a smbuser2 
+
+
+chmod -R 0770 /SMB-USER 
+chown -R root:smbgroup /SMB-USER 
+
+vi /etc/samba/smb.conf
+
+
+workgroup=WORKGROUP
+
+###### New Line ####
+[SMBUSER] 
+        comment = Secure Access
+	path = /SMB-USER 
+	writable = yes	
+	browsable = yes
+	guest ok = no
+	create mode = 0770 
+	directory mode = 0770
+	valid users =  @smbgroup
+
+
+testparm 
+
+systemctl restart smb 
+systemctl restart nmb 
+
+\\192.168.29.131
+
+setenforce 0 
+
+and restart again 
+
+parmanent solution: change selinux permisive 
+
+
+

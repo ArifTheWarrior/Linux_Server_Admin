@@ -1,0 +1,147 @@
+-RHEL Archive System
+-RHEL Network Set-up
+-RHEL Root Password Reset
+-RHEL Package Management 
+-RHEL kernel Update
+-RHeL Scheduling
+
+-Linux Partition System 
+   -Primary Partition 
+   - Extended Partition
+	-Logical partition
+	-virtual memory 
+
+====================================================
+
+- RHEL Archive System
+=====================
+
+- Compression
+============
+windows: .7zip, .rar, .7zip
+Linux Compression : .gz, .bz2, .xz
+
+Linux Archive: .tar
+Linux Archive+Compression: .tar.gz, .tar.bz2, .tar.xz
+
+cp -R /etc /root/Desktop
+
+du -sh etc/
+
+du -ch etc/
+
+Linux Archive:
+==============
+tar -cvf <output_File_Name>.tar <Input_File> 
+
+Extract: tar -xvf <File_Name>.tar 
+ 
+
+Linux Compression:
+===================
+
+.gz --> z
+.bz2 --> j
+.xz --> J
+
+Linux Archive+Compression:
+==========================
+tar -czvf <Output_File_Name>.tar.gz <Input_File>
+tar -cjvf <Output_File_Name>.tar.bz2 <Input_File>
+tar -cJvf <Output_File_Name>.tar.xz <Input_File>
+
+Extract:
+=======
+tar -xzvf <File_Name>.tar.gz
+tar -xjvf <File_Name>.tar.bz2
+tar -xJvf <File_Name>.tar.xz
+
+
+Only Compresion:
+================
+gzip <File_Name> 
+bzip2 <File_Name>
+xz <File_Name>
+
+Extract:
+========
+gunzip <File_Name>
+bunzip2 <File_Name>
+unxz <File_Name>
+
+========================================
+RHEL Network Set-up
+====================
+IP: 192.168.10.10/24
+DG: 192.168.10.1
+DNS: 8.8.8.8
+
+hostnamectl status
+hostnamectl set-hostname server.system.com
+ip address show 
+
+
+Hostname: server.system.com
+Domain: system.com
+
+nmcli connection show 
+nmcli connection modify ens33 ipv4.addresses 10.10.119.38/24 ipv4.gateway 10.10.119.1 ipv4.dns 8.8.8.8 ipv4.method manual connection.autoconnect yes 
+[root@server ~]# nmcli connection modify ens33 ipv4.addresses 192.168.10.10/24 ipv4.gateway 192.168.10.1 ipv4.dns 8.8.8.8 ipv4.method manual connection.autoconnect yes
+[root@server ~]# nmcli connection up ens33
+
+
+
+RHEL Package Management
+RHEL Scheduling
+=======================
+Win: .exe, .bin, .msi, ...
+Linux: 	.deb --> Ubuntu, Mint, Debian
+	.rpm --> RHEL, CentOS, Rocky Linux, Fedora
+
+Linux RPM package:
+	- Daemon:
+	- Package:
+
+RHEL Scheduling:
+	- Daemon (Services): crond
+	- Package: crontabs
+
+rpm -qa | grep crontabs 
+
+
+Scheduling
+
+	* * * * * <command>
+	1 2 3 4 5
+
+1. Minuts (0-59), 	2. Hours (0-23)	3. Day of Mounth (1-31)
+4. Day of Week (0-6; 0=Sunday)	5. Month (1-12)
+
+
+Question: Create a Schedule for Reboot the system every night at 11:59pm
+========================================================================
+[root@server ~]# which reboot 
+/usr/sbin/reboot
+
+[root@server ~]# crontab -e
+59 23 * * * /usr/sbin/reboot
+
+[root@server ~]# 
+[root@server ~]# systemctl start crond
+[root@server ~]# systemctl enable crond
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
